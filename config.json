@@ -1,0 +1,76 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log"
+  },
+  "api": {
+    "tag": "api",
+    "services": ["StatsService"]
+  },
+  "inbounds": [
+    {
+      "port": 80,
+      "protocol": "http",
+      "settings": {
+        "address": "0.0.0.0",
+        "allowTransparent": false
+      },
+      "tag": "api"
+    },
+    {
+      "port": 443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "748152ab-5348-4c26-9112-74d0ea2ede2c",
+	    "level": 1
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+	  "privatekey": "UCJv9KRBJdxeQB2EubOzw4TEtwK1exScfgLwmpvkTk0",
+          "dest": "www.wildberries.ru",
+          "serverNames": [
+	    "www.wildberries.ru"
+          ],
+	  "target": "www.wildberries.ru:443",
+          "shortIds": ["a1b2c3d4e5f67890"]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ],
+  "policy": {
+    "levels": {
+      "1": {
+        "uplink": 3072,
+        "downlink": 3072
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true
+    }
+  },
+  "dns": {
+    "servers": [
+      "8.8.8.8",
+      "8.8.4.4"
+    ],
+    "cache": {
+      "enabled": true,
+      "size": 1000
+    }
+  }
+}
