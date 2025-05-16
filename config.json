@@ -1,76 +1,94 @@
 {
-  "log": {
-    "loglevel": "warning",
-    "access": "/var/log/xray/access.log",
-    "error": "/var/log/xray/error.log"
-  },
-  "api": {
-    "tag": "api",
-    "services": ["StatsService"]
-  },
-  "inbounds": [
-    {
-      "port": 80,
-      "protocol": "http",
-      "settings": {
-        "address": "0.0.0.0",
-        "allowTransparent": false
-      },
-      "tag": "api"
+    "log": {
+        "loglevel": "debug",
+        "access": "/var/log/xray/access.log",
+        "error": "/var/log/xray/error.log"
     },
-    {
-      "port": 443,
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          {
-            "id": "748152ab-5348-4c26-9112-74d0ea2ede2c",
-	    "level": 1
-          }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-	  "privatekey": "UCJv9KRBJdxeQB2EubOzw4TEtwK1exScfgLwmpvkTk0",
-          "dest": "www.wildberries.ru",
-          "serverNames": [
-	    "www.wildberries.ru"
-          ],
-	  "target": "www.wildberries.ru:443",
-          "shortIds": ["a1b2c3d4e5f67890"]
+    "api": {
+        "tag": "api",
+        "services": [
+            "StatsService",
+            "HandlerService",
+            "LoggerService"
+        ]
+    },
+    "inbounds": [
+        {
+            "tag": "main",
+            "port": 443,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "0c9dc8ce-39d2-4f04-a56e-445b79383879",
+                        "level": 1,
+                        "email": "2145885581"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "privatekey": "4JfJzgh3Qu-cvrhsBZC8OSWcn-TCEAYDkH4hX2W_L2Y",
+                    "dest": "www.wildberries.ru",
+                    "serverNames": [
+                        "www.wildberries.ru"
+                    ],
+                    "target": "www.wildberries.ru:443",
+                    "shortIds": [
+                        "a1b2c3d4e5f67890"
+                    ]
+                }
+            }
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": 10085,
+            "protocol": "dokodemo-door",
+            "settings": {
+                "address": "127.0.0.1"
+            },
+            "tag": "api"
         }
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    }
-  ],
-  "policy": {
-    "levels": {
-      "1": {
-        "uplink": 3072,
-        "downlink": 3072
-      }
-    },
-    "system": {
-      "statsInboundUplink": true,
-      "statsInboundDownlink": true
-    }
-  },
-  "dns": {
-    "servers": [
-      "8.8.8.8",
-      "8.8.4.4"
     ],
-    "cache": {
-      "enabled": true,
-      "size": 1000
-    }
-  }
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "settings": {}
+        }
+    ],
+    "dns": {
+        "servers": [
+            "8.8.8.8"
+        ],
+        "cache": {
+            "enabled": true
+        }
+    },
+    "policy": {
+        "levels": {
+            "1": {
+                "uplinkSpeed": 2560,
+                "downlinkSpeed": 2560,
+                "handshake": 4,
+                "connIdle": 300,
+                "statsUserUplink": true,
+                "statsUserDownlink": true
+            }
+        }
+    },
+    "routing": {
+        "rules": [
+            {
+                "inboundTag": [
+                    "api"
+                ],
+                "outboundTag": "api",
+                "type": "field"
+            }
+        ]
+    },
+    "stats": {}
 }
